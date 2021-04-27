@@ -1,0 +1,21 @@
+import {extname} from 'path'
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+export const imageFileFilter = (req, file, callback) => {
+    if (!file.originalname.match(/\.(jpg|JPG|jpeg|png|gif)$/)) {
+        return callback(new HttpException("Your file is not an image.", HttpStatus.EXPECTATION_FAILED), false);
+    }
+    callback(null, true);
+}
+
+export const editFileName = (req, file, callback) => callback(null, file.originalname);
+
+export const editRandomFileName = (req, file, callback) => {
+    const name = file.originalname.split('.')[0];
+    const fileExtName = extname(file.originalname);
+    const randomName = Array(4)
+        .fill(null)
+        .map(() => Math.round(Math.random() * 16).toString(16))
+        .join('');
+    callback(null, `${name}-${randomName}${fileExtName}`);
+}
